@@ -12,5 +12,3 @@ ENTER
 STRING exit
 ENTER
 GUI q
-
-

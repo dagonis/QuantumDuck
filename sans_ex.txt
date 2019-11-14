@@ -1,0 +1,10 @@
+GUI SPACE
+DELAY 500
+STRING iterm
+ENTER
+DELAY 1000
+STRING st
+ENTER
+DELAY 1000
+GUI +++++++++++++++++++++++++++++++++
+STRING Hackfest is awesome!!!

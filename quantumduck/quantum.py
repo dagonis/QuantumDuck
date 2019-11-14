@@ -116,28 +116,55 @@ class DuckScript:
 
     @classmethod 
     def create_duckscript_object(cls, ducky_script_file):
+        commands = []
         duckyscript = open(ducky_script_file, "r").readlines()
         for line in duckyscript:
             line = line.strip()
             if line.startswith("ENTER"):
-                print(Enter(line))
+                commands.append(Enter(line))
             elif line.startswith("REM"):
-                print(Remark(line))
+                commands.append(Remark(line))
             elif line.startswith("DELAY"):
-                print(Delay(line))
+                commands.append(Delay(line))
             elif line.startswith("STRING"):
-                print(DuckyString(line))
+                commands.append(DuckyString(line))
             elif line.startswith("GUI") or line.startswith("WINDOWS"):
-                print(SuperMod(line))
+                commands.append(SuperMod(line))
             elif line.startswith("SHIFT"):
-                print(ShiftMod(line))
+                commands.append(ShiftMod(line))
             elif line.startswith("ALT"):
-                print(AltMod(line))
+                commands.append(AltMod(line))
             elif line.startswith("CONTROL") or line.startswith("CTRL"):
-                print(CtrlMod(line))
+                commands.append(CtrlMod(line))
             elif line.startswith("UP") or line.startswith("DOWN") or line.startswith("LEFT") or line.startswith("RIGHT"):
-                print(ArrowKey(line))
+                commands.append(ArrowKey(line))
             elif line.strip() in COMMAND_KEY_TABLE:
-                print(ExtendedCommand(line))
+                commands.append(ExtendedCommand(line))
             else:
                 pass
+        return DuckScript(commands)
+
+    def __str__(self):
+        return "\n".join([_.__str__() for _ in self.commands])
+
+    def full_output(self, name, indent=12):
+        print("# This part will go into the process_record_user() function")
+        send_string_template = """
+        case {}:
+          if (record->event.pressed) {{
+{}
+        }}
+        return false;"""
+        macro_str = ""
+        for command in self.commands:
+            macro_str += " " * indent
+            macro_str += command.__str__()
+            macro_str += "\n"
+        print(send_string_template.format(name, macro_str.rstrip()))
+        print("\n# This part will go towards the top of your config in your custom_keycodes section")
+        keycodes_template = """
+        enum custom_keycodes {{
+            {}
+        }};""".format(name)
+        print(keycodes_template)
+        print("\nDon't forget to add the key into your keymaps! Happy QuantumQuacking!!!")
